@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { GraphNode, NodeMetricKey } from "./model";
+import { Alert } from "@mui/material";
 
 type Props = {
   nodes: GraphNode[];
@@ -68,10 +69,20 @@ export default function NodeMetricHistogram({
 
   // empty-state
   if (!metricKey) {
-    return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center" }}>Select a node metric to show histogram</div>;
+    return (
+      <Alert severity="info">
+        Select a metric to display a histogram.
+      </Alert>
+    );
   }
+
   if (values.length === 0) {
-    return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center" }}>No numeric values for "{metricKey}"</div>;
+    return (
+      <Alert severity="warning">
+        No numeric values available for "
+        {metricKey}".
+      </Alert>
+    );
   }
 
   return (

@@ -206,7 +206,7 @@ export default function GraphView({
   );
 
   return (
-    <div style={{ width: width ?? "100%", height: height ?? "100%" }}>
+    <div style={{ width: width ?? "80%", height: height ?? "100%" }}>
       <ForceGraph2D
         ref={fgRef}
         graphData={data}

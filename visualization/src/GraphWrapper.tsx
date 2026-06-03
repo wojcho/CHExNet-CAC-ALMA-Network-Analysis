@@ -1,14 +1,32 @@
 import { useState } from "react";
+
+import {
+  Box,
+  Paper,
+  Stack,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Switch,
+  Slider,
+  Checkbox,
+} from "@mui/material";
+
 import type {
   EdgeListGraph,
   NodeNames,
   NodeMetricKey,
   EdgeMetricKey,
 } from "./model";
+
 import {
   NODE_METRICS,
   EDGE_METRICS,
 } from "./model";
+
 import GraphView from "./GraphView";
 import NodeMetricHistogram from "./NodeMetricHistogram";
 import NodeTable from "./NodeTable";
@@ -32,149 +50,239 @@ export default function GraphWrapper({
   initialPhysicsOn = true,
   onNodeClick,
 }: GraphWrapperProps) {
-  // UI state for controls
-  const [nodeSizeKey, setNodeSizeKey] = useState<NodeMetricKey | null>(
-    initialNodeSizeKey ?? null
-  );
-  const [edgeSizeKey, setEdgeSizeKey] = useState<EdgeMetricKey | null>(
-initialEdgeSizeKey ?? null
-  );
-  const [colorGroupKey, setColorGroupKey] = useState<NodeMetricKey | null>(
-    initialColorGroupKey ?? null
-  );
-  const [isPhysicsOn, setIsPhysicsOn] = useState<boolean>(
-    initialPhysicsOn ?? true
-  );
-  const [histMetricKey, setHistMetricKey] = useState<NodeMetricKey | null>(null);
-  const [bins, setBins] = useState<number | null>(20);
+  const [nodeSizeKey, setNodeSizeKey] =
+    useState<NodeMetricKey | null>(initialNodeSizeKey);
 
-  const handleNodeSizeKeyChange = (k: string) => {
-    setNodeSizeKey(k === "" ? null : (k as NodeMetricKey));
-  };
-  const handleEdgeSizeKeyChange = (k: string) => {
-    setEdgeSizeKey(k === "" ? null : (k as EdgeMetricKey));
-  };
-  const handleColorGroupKeyChange = (k: string) => {
-    setColorGroupKey(k === "" ? null : (k as NodeMetricKey));
-  };
+  const [edgeSizeKey, setEdgeSizeKey] =
+    useState<EdgeMetricKey | null>(initialEdgeSizeKey);
+
+  const [colorGroupKey, setColorGroupKey] =
+    useState<NodeMetricKey | null>(initialColorGroupKey);
+
+  const [isPhysicsOn, setIsPhysicsOn] =
+    useState<boolean>(initialPhysicsOn);
+
+  const [histMetricKey, setHistMetricKey] =
+    useState<NodeMetricKey | null>(null);
+
+  const [bins, setBins] =
+    useState<number | null>(20);
 
   return (
-    <div>
-      <div>
-        <label>
-          Node size metric:
-          <select
-            value={nodeSizeKey ?? ""}
-            onChange={(e) => handleNodeSizeKeyChange(e.target.value)}
-          >
-            <option value="">(fixed)</option>
-            {NODE_METRICS.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
-        </label>
+    <Stack spacing={3}>
+      {/* Controls */}
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Graph Controls
+        </Typography>
 
-        <label>
-          Edge width metric:
-          <select
-            value={edgeSizeKey ?? ""}
-            onChange={(e) => handleEdgeSizeKeyChange(e.target.value)}
-          >
-            <option value="">(fixed)</option>
-            {EDGE_METRICS.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
-        </label>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={2}
+          alignItems={{ md: "center" }}
+        >
+          <FormControl size="small" sx={{ minWidth: 220 }}>
+            <InputLabel>Node Size</InputLabel>
+            <Select
+              label="Node Size"
+              value={nodeSizeKey ?? ""}
+              onChange={(e) =>
+                setNodeSizeKey(
+                  e.target.value === ""
+                    ? null
+                    : (e.target.value as NodeMetricKey)
+                )
+              }
+            >
+              <MenuItem value="">Fixed</MenuItem>
 
-        <label>
-          Color group:
-          <select
-            value={colorGroupKey ?? ""}
-            onChange={(e) => handleColorGroupKeyChange(e.target.value)}
-          >
-            <option value="">(single color)</option>
-            {NODE_METRICS.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
-        </label>
+              {NODE_METRICS.map((metric) => (
+                <MenuItem key={metric} value={metric}>
+                  {metric}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <label>
-          Physics:
-          <input
-            type="checkbox"
-            checked={isPhysicsOn}
-            onChange={(e) => setIsPhysicsOn(e.target.checked)}
+          <FormControl size="small" sx={{ minWidth: 220 }}>
+            <InputLabel>Edge Width</InputLabel>
+            <Select
+              label="Edge Width"
+              value={edgeSizeKey ?? ""}
+              onChange={(e) =>
+                setEdgeSizeKey(
+                  e.target.value === ""
+                    ? null
+                    : (e.target.value as EdgeMetricKey)
+                )
+              }
+            >
+              <MenuItem value="">Fixed</MenuItem>
+
+              {EDGE_METRICS.map((metric) => (
+                <MenuItem key={metric} value={metric}>
+                  {metric}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 220 }}>
+            <InputLabel>Color Group</InputLabel>
+            <Select
+              label="Color Group"
+              value={colorGroupKey ?? ""}
+              onChange={(e) =>
+                setColorGroupKey(
+                  e.target.value === ""
+                    ? null
+                    : (e.target.value as NodeMetricKey)
+                )
+              }
+            >
+              <MenuItem value="">Single Color</MenuItem>
+
+              {NODE_METRICS.map((metric) => (
+                <MenuItem key={metric} value={metric}>
+                  {metric}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isPhysicsOn}
+                onChange={(e) =>
+                  setIsPhysicsOn(e.target.checked)
+                }
+              />
+            }
+            label="Physics"
           />
-        </label>
-      </div>
+        </Stack>
+      </Paper>
 
-      <GraphView
-        graph={graph}
-        nodeNames={nodeNames}
-        nodeSizeKey={nodeSizeKey}
-        edgeSizeKey={edgeSizeKey}
-        colorGroupKey={colorGroupKey}
-        height={450}
-        isPhysicsOn={isPhysicsOn}
-        onNodeClick={onNodeClick}
-      />
+      {/* Graph */}
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Network Graph
+        </Typography>
 
-      <div>
+        <Box sx={{ height: 450, overflow: "hidden" }}>
+          <GraphView
+            graph={graph}
+            nodeNames={nodeNames}
+            nodeSizeKey={nodeSizeKey}
+            edgeSizeKey={edgeSizeKey}
+            colorGroupKey={colorGroupKey}
+            height={450}
+            isPhysicsOn={isPhysicsOn}
+            onNodeClick={onNodeClick}
+          />
+        </Box>
+      </Paper>
 
-        <label>
-          Histogram metric:
-          <select
-            value={histMetricKey ?? ""}
-            onChange={(e) => setHistMetricKey(e.target.value === "" ? null : (e.target.value as NodeMetricKey))}
-          >
-            <option value="">(none)</option>
-            {NODE_METRICS.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
-        </label>
+      {/* Histogram */}
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Node Metric Distribution
+        </Typography>
 
-        {histMetricKey && (<>
-          <label>
-            Bins:
-            <input
-              type="range"
-              min={1}
-              max={Math.max(1, graph.nodes.length)}
-              value={bins === null ? Math.max(1, graph.nodes.length) : bins}
-              onChange={(e) => setBins(Number(e.target.value))}
-              disabled={bins === null}
-            />
-            <span style={{ marginLeft: 8 }}>
-              {bins === null ? "All unique" : `${bins}`}
-            </span>
-          </label>
+        <Stack spacing={2}>
+          <FormControl size="small" sx={{ maxWidth: 320 }}>
+            <InputLabel>Metric</InputLabel>
 
-          <label style={{ marginLeft: 12 }}>
-            <input
-              type="checkbox"
-              checked={bins === null}
-              onChange={(e) => setBins(e.target.checked ? null : 20)}
-            />
-            All unique values
-          </label>
-        </>)}
-      </div>
+            <Select
+              label="Metric"
+              value={histMetricKey ?? ""}
+              onChange={(e) =>
+                setHistMetricKey(
+                  e.target.value === ""
+                    ? null
+                    : (e.target.value as NodeMetricKey)
+                )
+              }
+            >
+              <MenuItem value="">None</MenuItem>
 
-      <NodeMetricHistogram nodes={graph.nodes} metricKey={histMetricKey} bins={bins} height={250} />
-      
-      <NodeTable nodes={graph.nodes} nodeNames={nodeNames} />
-    </div>
+              {NODE_METRICS.map((metric) => (
+                <MenuItem key={metric} value={metric}>
+                  {metric}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
+          {histMetricKey && (
+            <>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={bins === null}
+                    onChange={(e) =>
+                      setBins(
+                        e.target.checked
+                          ? null
+                          : 20
+                      )
+                    }
+                  />
+                }
+                label="All unique values"
+              />
+
+              <Box sx={{ maxWidth: 500 }}>
+                <Typography gutterBottom>
+                  Bins:{" "}
+                  {bins === null
+                    ? "All unique"
+                    : bins}
+                </Typography>
+
+                <Slider
+                  disabled={bins === null}
+                  min={1}
+                  max={Math.max(
+                    1,
+                    graph.nodes.length
+                  )}
+                  value={
+                    bins ??
+                    Math.max(
+                      1,
+                      graph.nodes.length
+                    )
+                  }
+                  onChange={(_, value) =>
+                    setBins(value as number)
+                  }
+                />
+              </Box>
+            </>
+          )}
+
+          <NodeMetricHistogram
+            nodes={graph.nodes}
+            metricKey={histMetricKey}
+            bins={bins}
+            height={250}
+          />
+        </Stack>
+      </Paper>
+
+      {/* Table */}
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Nodes
+        </Typography>
+
+        <NodeTable
+          nodes={graph.nodes}
+          nodeNames={nodeNames}
+        />
+      </Paper>
+    </Stack>
   );
 }
