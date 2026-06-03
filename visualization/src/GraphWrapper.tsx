@@ -79,7 +79,6 @@ export default function GraphWrapper({
         <Stack
           direction={{ xs: "column", md: "row" }}
           spacing={2}
-          alignItems={{ md: "center" }}
         >
           <FormControl size="small" sx={{ minWidth: 220 }}>
             <InputLabel>Node Size</InputLabel>
@@ -87,11 +86,7 @@ export default function GraphWrapper({
               label="Node Size"
               value={nodeSizeKey ?? ""}
               onChange={(e) =>
-                setNodeSizeKey(
-                  e.target.value === ""
-                    ? null
-                    : (e.target.value as NodeMetricKey)
-                )
+                setNodeSizeKey(e.target.value)
               }
             >
               <MenuItem value="">Fixed</MenuItem>
@@ -110,11 +105,7 @@ export default function GraphWrapper({
               label="Edge Width"
               value={edgeSizeKey ?? ""}
               onChange={(e) =>
-                setEdgeSizeKey(
-                  e.target.value === ""
-                    ? null
-                    : (e.target.value as EdgeMetricKey)
-                )
+                setEdgeSizeKey(e.target.value as EdgeMetricKey)
               }
             >
               <MenuItem value="">Fixed</MenuItem>
@@ -133,11 +124,7 @@ export default function GraphWrapper({
               label="Color Group"
               value={colorGroupKey ?? ""}
               onChange={(e) =>
-                setColorGroupKey(
-                  e.target.value === ""
-                    ? null
-                    : (e.target.value as NodeMetricKey)
-                )
+                setColorGroupKey(e.target.value)
               }
             >
               <MenuItem value="">Single Color</MenuItem>
@@ -198,11 +185,7 @@ export default function GraphWrapper({
               label="Metric"
               value={histMetricKey ?? ""}
               onChange={(e) =>
-                setHistMetricKey(
-                  e.target.value === ""
-                    ? null
-                    : (e.target.value as NodeMetricKey)
-                )
+                setHistMetricKey(e.target.value)
               }
             >
               <MenuItem value="">None</MenuItem>
