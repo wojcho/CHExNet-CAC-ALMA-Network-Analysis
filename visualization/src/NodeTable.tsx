@@ -13,11 +13,15 @@ import { NODE_METRICS } from "./model";
 type Props = {
   nodes: GraphNode[];
   nodeNames: NodeNames;
+  hoveredNodeId: number | null;
+  onNodeHover: (id: number | null) => void;
 };
 
 export default function NodeTable({
   nodes,
   nodeNames,
+  hoveredNodeId,
+  onNodeHover,
 }: Props) {
   const rows = useMemo(
     () =>
@@ -63,15 +67,35 @@ export default function NodeTable({
         mt: 2,
         height: 700,
         width: "100%",
+        "& .hovered-node-row": {
+          backgroundColor: "rgba(25,118,210,0.15)",
+        },
       }}
     >
       <DataGrid
         rows={rows}
         columns={columns}
         disableRowSelectionOnClick
-        // onRowClick={(params) => {
-          // console.log(params.row.id);
-        // }}
+        getRowClassName={(params) =>
+          params.id === hoveredNodeId
+            ? "hovered-node-row"
+            : ""
+        }
+        slotProps={{
+          row: {
+            onMouseEnter: (e: any) => {
+              const id =
+                e.currentTarget?.dataset?.id;
+
+              if (id) {
+                onNodeHover(Number(id));
+              }
+            },
+            onMouseLeave: () => {
+              onNodeHover(null);
+            },
+          },
+        }}
         pageSizeOptions={[25, 50, 100]}
         initialState={{
           pagination: {

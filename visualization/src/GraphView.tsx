@@ -19,6 +19,10 @@ type Props = {
   height?: number; // width, height optionally passed to canvas component; otherwise it will fill container
   onNodeClick?: (node: GraphNode) => void;
   isPhysicsOn?: boolean;
+  hoveredNodeId?: number | null;
+  onNodeHover?: (
+    id: number | null
+  ) => void;
 };
 
 function safeGetNodeMetric(node: GraphNode, key?: NodeMetricKey | null): number | null {
@@ -77,6 +81,8 @@ export default function GraphView({
   height,
   onNodeClick,
   isPhysicsOn = true,
+  hoveredNodeId = null,
+  onNodeHover,
 }: Props) {
   const fgRef = useRef<ForceGraphMethods | null>(null);
 
@@ -162,14 +168,26 @@ export default function GraphView({
       const n: GraphNode = node.__raw;
       const name = nodeNames[String(n.id)] ?? n.name ?? String(n.id);
 
+      const isHovered = hoveredNodeId === n.id;
       const radius =
         nodeRadiusMap?.get(n.id) ?? DEFAULT_NODE_RADIUS;
       const color = nodeColorMap.get(n.id) ?? COLOR_PALETTE[0];
 
       ctx.beginPath();
       ctx.fillStyle = color;
-      ctx.arc(node.x as number, node.y as number, radius, 0, 2 * Math.PI, false);
+      ctx.arc(
+        node.x as number,
+        node.y as number,
+        isHovered ? radius * 1.6 : radius,
+        0,
+        2 * Math.PI
+      );
       ctx.fill();
+      if (isHovered) {
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
 
       // draw label if zoomed in enough
       const labelFontSize = Math.max(4, Math.min(16, 12 * (1 / globalScale)));
@@ -183,7 +201,7 @@ export default function GraphView({
         ctx.fillText(name, node.x as number, (node.y as number) + radius + 2);
       }
     },
-    [nodeNames, nodeRadiusMap, nodeColorMap]
+    [nodeNames, nodeRadiusMap, nodeColorMap, hoveredNodeId]
   );
 
   // Link width accessor
@@ -216,18 +234,26 @@ export default function GraphView({
         width={width}
         height={height}
         onNodeClick={(nodeObj) => {
-          const n: GraphNode = (nodeObj as any).__raw;
+          const n: GraphNode = (nodeObj).__raw;
           if (onNodeClick) onNodeClick(n);
           // center on node
           const fg = fgRef.current;
-          if (fg && (nodeObj as any).x !== undefined) {
-            fg.centerAt((nodeObj as any).x, (nodeObj as any).y, 400);
+          if (fg && (nodeObj).x !== undefined) {
+            fg.centerAt((nodeObj).x, (nodeObj).y, 400);
             fg.zoom(1.5, 400);
           }
         }}
         nodeLabel={nodeLabel}
         cooldownTicks={isPhysicsOn === false ? 0 : 100}
         d3VelocityDecay={isPhysicsOn === false ? 1 : 0.2}
+        onNodeHover={(node) => {
+          const raw =
+            (node as any)?.__raw;
+
+          onNodeHover?.(
+            raw ? raw.id : null
+          );
+        }}
       />
     </div>
   );

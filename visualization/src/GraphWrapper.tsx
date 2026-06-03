@@ -20,6 +20,7 @@ import type {
   NodeNames,
   NodeMetricKey,
   EdgeMetricKey,
+  NodeId,
 } from "./model";
 
 import {
@@ -67,6 +68,9 @@ export default function GraphWrapper({
 
   const [bins, setBins] =
     useState<number | null>(20);
+
+  const [hoveredNodeId, setHoveredNodeId] =
+    useState<NodeId | null>(null);
 
   return (
     <Stack spacing={3}>
@@ -167,8 +171,24 @@ export default function GraphWrapper({
             height={450}
             isPhysicsOn={isPhysicsOn}
             onNodeClick={onNodeClick}
+            hoveredNodeId={hoveredNodeId}
+            onNodeHover={setHoveredNodeId}
           />
         </Box>
+      </Paper>
+
+      {/* Table */}
+      <Paper sx={{ p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Nodes
+        </Typography>
+
+        <NodeTable
+          nodes={graph.nodes}
+          nodeNames={nodeNames}
+          hoveredNodeId={hoveredNodeId}
+          onNodeHover={setHoveredNodeId}
+        />
       </Paper>
 
       {/* Histogram */}
@@ -255,17 +275,6 @@ export default function GraphWrapper({
         </Stack>
       </Paper>
 
-      {/* Table */}
-      <Paper sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Nodes
-        </Typography>
-
-        <NodeTable
-          nodes={graph.nodes}
-          nodeNames={nodeNames}
-        />
-      </Paper>
     </Stack>
   );
 }
