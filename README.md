@@ -105,11 +105,13 @@ By hovering on one of these candidates, their names are revealed, and highlit in
 Although, sorting directly in table can be more convenient.
 By pressing on column header in `betweennessCentrality`, the table will be sorted using that column.
 It would then be visible that the most important such researchers are the following:
+
 | Surname, Name         | Betweenness Centrality |
 |-----------------------|------------------------|
 | Siebeneicher, Jakub   | 0.2187                 |
 | Maciejowski, Bernard  | 0.1887                 |
 | Piotrkowczyk, Andrzej | 0.1661                 |
+
 For the scientists afterwards, the scores are much smaller, being for them repeatedly (values repeat because of clique projection): 0.0430, 0.0006, 0.0000.
 Two of these persons are not actually researchers, but are owners of printing houses, which explains why they took a role which involved collaboration with otherwise not connected researchers.
 
@@ -121,11 +123,13 @@ Amount of bins can be adjusted, or all unique values can be shown separately.
 Comparison between `CAC` and `ALMA` could show, that ALMA Dataset is more sparse than CAC dataset.
 Overall, most nodes have small degree, taking part in only a few edges.
 `Full` has a few nodes which have unusually large degree, which are very much outliers, even more so than in separate datasets.
+
 | Surname, Name         | Degree Centrality Normalized |
 |-----------------------|------------------------------|
 | Zawadzki, Stanisław   | 0.0936                       |
 | Brożek, Jan           | 0.0922                       |
 | Cezary, Franciszek    | 0.0827                       |
+
 Taking part in around 10% of possible edges, these are very important nodes.
 Franciszek Cezary owned a printing house, Jan Brożek was a rector of Kraków Academy, Stanisław Zawadzki was also a rector of Kraków Academy.
 
